@@ -9,7 +9,7 @@ print("""1 - Cadastrar produto
 4 - Excluir produto
 5 - Sair""")
 
-product = list()
+products = list()
 
 while True:
     mainMenu_option = (input("Digite sua opção: "))
@@ -17,6 +17,7 @@ while True:
         break
     else:
         print("Erro! Digite uma opção valida.")
+    print()
 
 if mainMenu_option == '1': #Cadastrar novo produto
     print()
@@ -26,8 +27,8 @@ if mainMenu_option == '1': #Cadastrar novo produto
     while True:
         while True:
             idProduct = (input("\nID do produto: ")).upper()
-            for i in product:
-                if idProduct == i[0]:
+            for product in products:
+                if idProduct == product[0]:
                     print("Esse ID ja foi cadastrado! Tente novamente.")
                     break
             else:
@@ -36,12 +37,12 @@ if mainMenu_option == '1': #Cadastrar novo produto
         price = (float(input("Preço do produto: R$")))
         quant = (int(input("Estoque do produto: ")))
 
-        product.append([idProduct, name, price, quant])
+        products.append([idProduct, name, price, quant])
 
         print("\nPRODUTO CADASTRADO COM SUCESSO!\n")
-        print(f"ID: {idProduct}"),sleep(0.5)
-        print(f"NOME: {name}"),sleep(0.5)
-        print(f"PREÇO: R${price}"),sleep(0.5)
+        print(f"ID: {idProduct}"),sleep(0.3)
+        print(f"NOME: {name}"),sleep(0.3)
+        print(f"PREÇO: R${price}"),sleep(0.3)
         print(f"ESTOQUE: {quant}")
     
         while True:
@@ -69,10 +70,22 @@ if mainMenu_option == '1': #Cadastrar novo produto
             break
         else:
             print("Erro! Digite uma opção valida.")
-   
+    print()
+
+if mainMenu_option == '2':
+    if products:
+        print("="*40)
+        print(f"{"LISTAGEM DE PRODUTOS":^40}")
+        print("="*40)
+        print(f"{"ID":<10}{"NOME":<12}{"PREÇO":<11}{"ESTOQUE":>5}")
+        print('-'*40)
+        for product in products:
+            sleep(0.5)
+            print(f"{product[0]:<10}{product[1]:<12}R${product[2]:<5}{product[3]:>8}")
+    else:
+        print("Nenhum produto cadastrado.")
 
 if mainMenu_option == '3':
-    print()
     print('='*40)
     print(f"{"ATUALIZAR PRODUTOS":^40}")
     print('='*40)
@@ -80,26 +93,26 @@ if mainMenu_option == '3':
 
     while True:
         search = input("\nDigite o ID do produto: ").upper()
-        for p in product:
-            if search == p[0]:
-                print(f"\nEncontrei {p[0]}!\n")
+        for product in products:
+            if search == product[0]:
+                print(f"\nEncontrei {product[0]}!\n")
                 while True:
                     idProduct = input("Digite o novo ID: ").upper()
-                    for i in product:
-                        if idProduct == i[0] and idProduct != p[0]:
+                    for i in products:
+                        if idProduct == i[0] and idProduct != product[0]:
                             print("Esse ID ja foi cadastrado! Tente novamente.\n")
                             break
                     else:
-                        p[0] = idProduct
+                        product[0] = idProduct
                         break
-                p[1] = input("Digite o novo nome: ").upper()
-                p[2] = float(input("Digite o novo preço: R$"))
-                p[3] = int(input("Digite o novo estoque: "))
+                product[1] = input("Digite o novo nome: ").upper()
+                product[2] = float(input("Digite o novo preço: R$"))
+                product[3] = int(input("Digite o novo estoque: "))
                 print("\nPRODUTO ATUALIZADO!\n")
-                print(f"ID: {p[0]}"),sleep(0.5)
-                print(f"NOME: {p[1]}"),sleep(0.5)
-                print(f"PREÇO: R${p[2]}"),sleep(0.5)
-                print(f"ESTOQUE: {p[3]}")
+                print(f"ID: {product[0]}"),sleep(0.5)
+                print(f"NOME: {product[1]}"),sleep(0.5)
+                print(f"PREÇO: R${product[2]}"),sleep(0.5)
+                print(f"ESTOQUE: {product[3]}")
 
                 while True:
                     updateProduct_option = input("\nDeseja continuar? [S/N] ").upper()

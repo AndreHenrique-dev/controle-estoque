@@ -72,7 +72,7 @@ if mainMenu_option == '1': #Cadastrar novo produto
             print("Erro! Digite uma opção valida.")
     print()
 
-if mainMenu_option == '2':
+if mainMenu_option == '2': #Listar produtos
     if products:
         print("="*40)
         print(f"{"LISTAGEM DE PRODUTOS":^40}")
@@ -85,11 +85,12 @@ if mainMenu_option == '2':
     else:
         print("Nenhum produto cadastrado.")
 
-if mainMenu_option == '3':
+if mainMenu_option == '3': #Atualizar produtos
     print('='*40)
     print(f"{"ATUALIZAR PRODUTOS":^40}")
     print('='*40)
 
+    updateProduct_option = ''
 
     while True:
         search = input("\nDigite o ID do produto: ").upper()
@@ -124,4 +125,30 @@ if mainMenu_option == '3':
         else:
             print("\nNão encontrei! Digite novamente\n")
         if updateProduct_option == 'N':
+            break
+
+if mainMenu_option == '4':
+    deleteProducts_option = ''
+    while True:
+        delete_IdProduct = input("Digite o ID do produto: ").upper()
+        print()
+        for i,product in enumerate(products):
+            if delete_IdProduct == product[0]:
+                print("Produto encontrado! Excluindo...")
+                del products[i]
+                sleep(0.5)
+                print("Produto excluido!\n")
+                print(f"Lista atualizada:")
+                for product in products:
+                    print(product)
+                while True:
+                    deleteProducts_option = input("\nDeseja continuar? [S/N] ").upper()
+                    if deleteProducts_option in ('S', 'N'):
+                        break
+                    else:
+                        print("Entrada invalida! Digite novamente.")
+                break
+        else:
+            print("Não encontrei! Tente novamente\n")
+        if deleteProducts_option == 'N':
             break

@@ -9,7 +9,7 @@ print("""1 - Cadastrar produto
 4 - Excluir produto
 5 - Sair""")
 
-products = list()
+products = []
 
 while True:
     mainMenu_option = (input("Digite sua opção: "))
@@ -28,7 +28,7 @@ if mainMenu_option == '1': #Cadastrar novo produto
         while True:
             idProduct = (input("\nID do produto: ")).upper()
             for product in products:
-                if idProduct == product[0]:
+                if idProduct == product["id"]:
                     print("Esse ID ja foi cadastrado! Tente novamente.")
                     break
             else:
@@ -37,7 +37,10 @@ if mainMenu_option == '1': #Cadastrar novo produto
         price = (float(input("Preço do produto: R$")))
         quant = (int(input("Estoque do produto: ")))
 
-        products.append([idProduct, name, price, quant])
+        products.append({"id": idProduct,
+                         "name" : name,
+                         "price": price,
+                         "quant" : quant})
 
         print("\nPRODUTO CADASTRADO COM SUCESSO!\n")
         print(f"ID: {idProduct}"),sleep(0.3)
@@ -81,7 +84,7 @@ if mainMenu_option == '2': #Listar produtos
         print('-'*40)
         for product in products:
             sleep(0.5)
-            print(f"{product[0]:<10}{product[1]:<12}R${product[2]:<5}{product[3]:>8}")
+            print(f"{product['id']:<10}{product['name']:<12}R${product['price']:<5}{product['quant']:>8}")
     else:
         print("Nenhum produto cadastrado.")
 
@@ -95,25 +98,25 @@ if mainMenu_option == '3': #Atualizar produtos
     while True:
         search = input("\nDigite o ID do produto: ").upper()
         for product in products:
-            if search == product[0]:
-                print(f"\nEncontrei {product[0]}!\n")
+            if search == product['id']:
+                print(f"\nEncontrei {product['id']}!\n")
                 while True:
                     idProduct = input("Digite o novo ID: ").upper()
                     for i in products:
-                        if idProduct == i[0] and idProduct != product[0]:
+                        if idProduct == i['id'] and idProduct != product['id']:
                             print("Esse ID ja foi cadastrado! Tente novamente.\n")
                             break
                     else:
-                        product[0] = idProduct
+                        product['id'] = idProduct
                         break
-                product[1] = input("Digite o novo nome: ").upper()
-                product[2] = float(input("Digite o novo preço: R$"))
-                product[3] = int(input("Digite o novo estoque: "))
+                product['name'] = input("Digite o novo nome: ").upper()
+                product['price'] = float(input("Digite o novo preço: R$"))
+                product['quant'] = int(input("Digite o novo estoque: "))
                 print("\nPRODUTO ATUALIZADO!\n")
-                print(f"ID: {product[0]}"),sleep(0.5)
-                print(f"NOME: {product[1]}"),sleep(0.5)
-                print(f"PREÇO: R${product[2]}"),sleep(0.5)
-                print(f"ESTOQUE: {product[3]}")
+                print(f"ID: {product['id']}"),sleep(0.5)
+                print(f"NOME: {product['name']}"),sleep(0.5)
+                print(f"PREÇO: R${product['price']}"),sleep(0.5)
+                print(f"ESTOQUE: {product['quant']}")
 
                 while True:
                     updateProduct_option = input("\nDeseja continuar? [S/N] ").upper()
@@ -133,7 +136,7 @@ if mainMenu_option == '4':
         delete_IdProduct = input("Digite o ID do produto: ").upper()
         print()
         for i,product in enumerate(products):
-            if delete_IdProduct == product[0]:
+            if delete_IdProduct == product['id']:
                 print("Produto encontrado! Excluindo...")
                 del products[i]
                 sleep(0.5)

@@ -1,5 +1,30 @@
 from time import sleep
-def title(txt = '',line = '='):
+
+import os
+import mysql.connector
+from mysql.connector import Error
+from dotenv import load_dotenv
+
+load_dotenv()
+
+#Criando conexão com o banco de dados.
+conection = None
+cursor = None
+try:
+    conection = mysql.connector.connect(
+        host = os.getenv("DB_HOST"),
+        user = os.getenv("DB_USER"),
+        password = os.getenv("DB_PASSWORD"),
+        database = os.getenv("DB_NAME")
+        )
+
+except Error as erro:
+    print(f"Problema ao criar conexão com o servidor!\nERRO > {erro}")
+    exit()
+
+
+#Declarando funções.
+def title(txt = '',line = '='): #Estilização de texto.
     """
         -> Escreve um titulo centralizado entre duas linhas.
     Parâmetros:
@@ -10,7 +35,7 @@ def title(txt = '',line = '='):
     print(txt.center(len(txt)+6).upper())
     print(line*(len(txt)+6))
 
-def mainMenu():
+def mainMenu(): #Menu principal.
     """
         -> Mostra um menu com 5 opções.
     """
@@ -26,7 +51,7 @@ def mainMenu():
             print("\nErro! Digite uma opção valida.\n")
     print()
 
-def createProduct():
+def createProduct(): #Inserir novos produtos.
     print()
     title("CADASTRO DE PRODUTOS")
     while True:
@@ -63,18 +88,22 @@ def createProduct():
             break
     print()
 
-def readProduct():
+def readProduct(): #Listar produtos.
     print()
-    if products:
-        title("LISTAGEM DE PRODUTOS")
-        print(f"{"ID":<10}{"NOME":<12}{"PREÇO":<11}{"ESTOQUE":>5}")
-        print('-'*40)
-        for product in products:
-            sleep(0.5)
-            print(f"{product['id']:<10}{product['name']:<12}R${product['price']:<5}{product['quant']:>8}")
-    else:
-        print("Nenhum produto cadastrado.")
-        sleep(1)
+    cursor = conection.cursor(dictionary = True) #Criar cursor
+
+    sql = ('SELECT * FROM estoque') #Variavel com comando SQL
+
+    cursor.execute(sql) #Executando o comando no banco de dados.
+
+    estoque  = cursor.fetchall() #Recolhendo todos os dados do cursor.
+
+    print(f"{'ID':<7} {'NOME':<20} {'PREÇO':>8} {'ESTOQUE':>14}")
+    print('-' * 53)
+
+    for products in estoque:
+        print(f"{products['id']:<7} {products['nome']:<20} {'R$':>5} {products['preco']:>6.2f} {products['quantidade']:>10}")
+        sleep(0.4)
 
 def uptadeProduct():
     print()
@@ -166,18 +195,25 @@ products = [] #Lista com os produtos(dicionarios)
 title("sistema controle-estoque",'~')
 
 while True:
-    mainMenu() #Chama o menu principal.
+    mainMenu()
 
-    if mainMenu_option == '1': #Se 
-        createProduct()
-    elif mainMenu_option == '2':
-        readProduct()
-    elif mainMenu_option == '3':
-        uptadeProduct()
-    elif mainMenu_option == '4':
-        deleteProduct()
-    else:
-        title("ATÉ LOGO!")
-        break
-
-
+    try:
+        if mainMenu_option == '1':
+            createProduct()
+        elif mainMenu_option == '2':
+            readProduct()
+        elif mainMenu_option == '3':
+            uptadeProduct()
+        elif mainMenu_option == '4':
+            deleteProduct()
+        else:
+            if conection is not None and conection.is_connected(): #Fechando conexão ao fim do programa.
+                conection.close()
+            title("ATÉ LOGO!")
+            break
+    except Error as erro:
+        print(f"Falha na requisição!\nErro > {erro}")
+    
+    finally:
+        if cursor is not None:
+            cursor.close()

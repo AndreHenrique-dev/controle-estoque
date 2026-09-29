@@ -9,7 +9,6 @@ load_dotenv()
 
 #Criando conexão com o banco de dados.
 conection = None
-cursor = None
 try:
     conection = mysql.connector.connect(
         host = os.getenv("DB_HOST"),
@@ -45,7 +44,7 @@ def mainMenu(): #Menu principal.
     print("1 - Cadastrar produto\n2 - Listar produtos\n3 - Atualizar produto\n4 - Excluir produto\n5 - Sair")
     while True:
         mainMenu_option = (input("Digite sua opção: "))
-        if mainMenu_option in "12345":
+        if mainMenu_option in ('1','2','3','4','5'):
             break
         else:
             print("\nErro! Digite uma opção valida.\n")
@@ -104,6 +103,9 @@ def readProduct(): #Listar produtos.
     for products in estoque:
         print(f"{products['id']:<7} {products['nome']:<20} {'R$':>5} {products['preco']:>6.2f} {products['quantidade']:>10}")
         sleep(0.4)
+
+    cursor.close()
+    
 
 def uptadeProduct():
     print()

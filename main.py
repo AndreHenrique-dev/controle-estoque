@@ -8,9 +8,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 #Criando conexão com o banco de dados.
-conection = None
+connection = None
 try:
-    conection = mysql.connector.connect(
+    connection = mysql.connector.connect(
         host = os.getenv("DB_HOST"),
         user = os.getenv("DB_USER"),
         password = os.getenv("DB_PASSWORD"),
@@ -51,7 +51,7 @@ def mainMenu(): #Menu principal.
     print()
 
 def createProduct(): #Inserir novos produtos.
-    cursor = conection.cursor() #Criar cursor.
+    cursor = connection.cursor() #Criar cursor.
     print()
     title("CADASTRO DE PRODUTOS")
     code = input("CÓDIGO(5 digitos): ")
@@ -62,14 +62,16 @@ def createProduct(): #Inserir novos produtos.
     sql = ("INSERT INTO estoque (codigo,nome,preco,quantidade) values (%s,%s,%s,%s)")
 
     cursor.execute(sql,param)
-    conection.commit()
+    connection.commit()
+
+    cursor.close()
 
     print("\nProduto cadastrado com sucesso!")
 
 def readProduct(): #Listar produtos.
     print()
     title("LISTANDO PRODUTOS")
-    cursor = conection.cursor(dictionary = True) #Criar cursor.
+    cursor = connection.cursor(dictionary = True) #Criar cursor.
 
     sql = ('SELECT * FROM estoque') #Variavel com comando SQL.
 
@@ -189,11 +191,11 @@ while True:
         elif mainMenu_option == '4':
             deleteProduct()
         else:
-            if conection is not None and conection.is_connected(): #Fechando conexão ao fim do programa.
-                conection.close()
+            if connection is not None and connection.is_connected(): #Fechando conexão ao fim do programa.
+                connection.close()
             title("ATÉ LOGO!")
             break
     except Error as erro:
         if mainMenu_option != '2':
-            conection.rollback()
+            connection.rollback()
         print(f"Falha na requisição!\nErro > {erro}")

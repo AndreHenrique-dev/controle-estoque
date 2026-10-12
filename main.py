@@ -51,47 +51,27 @@ def mainMenu(): #Menu principal.
     print()
 
 def createProduct(): #Inserir novos produtos.
+    cursor = conection.cursor() #Criar cursor.
     print()
     title("CADASTRO DE PRODUTOS")
-    while True:
-        while True:
-            idProduct = (input("\nID do produto: ")).upper()
-            for product in products:
-                if idProduct == product["id"]:
-                    print("Esse ID ja foi cadastrado! Tente novamente.")
-                    break
-            else:
-                break
-        name = (input("Nome do produto: ").upper())
-        price = (float(input("Preço do produto: R$")))
-        quant = (int(input("Estoque do produto: ")))
+    code = input("CÓDIGO(5 digitos): ")
+    name = input("NOME: ")
+    price = input("PREÇO: ")
+    quant = input("ESTOQUE: ")
+    param = (code,name,price,quant)
+    sql = ("INSERT INTO estoque (codigo,nome,preco,quantidade) values (%s,%s,%s,%s)")
 
-        products.append({"id": idProduct,
-                        "name" : name,
-                        "price": price,
-                        "quant" : quant})
+    cursor.execute(sql,param)
+    conection.commit()
 
-        print("\nPRODUTO CADASTRADO COM SUCESSO!\n")
-        print(f"ID: {idProduct}"),sleep(0.3)
-        print(f"NOME: {name}"),sleep(0.3)
-        print(f"PREÇO: R${price}"),sleep(0.3)
-        print(f"ESTOQUE: {quant}")
-
-        while True:
-            newProduct_option = input("\nDeseja continuar? [S/N] ").upper()
-            if newProduct_option in ("S","N"):
-                break
-            else:
-                print("Opção invalida! Digite uma opção valida.")
-        if newProduct_option == 'N':
-            break
-    print()
+    print("\nProduto cadastrado com sucesso!")
 
 def readProduct(): #Listar produtos.
     print()
-    cursor = conection.cursor(dictionary = True) #Criar cursor
+    title("LISTANDO PRODUTOS")
+    cursor = conection.cursor(dictionary = True) #Criar cursor.
 
-    sql = ('SELECT * FROM estoque') #Variavel com comando SQL
+    sql = ('SELECT * FROM estoque') #Variavel com comando SQL.
 
     cursor.execute(sql) #Executando o comando no banco de dados.
 
@@ -214,8 +194,6 @@ while True:
             title("ATÉ LOGO!")
             break
     except Error as erro:
+        if mainMenu_option != '2':
+            conection.rollback()
         print(f"Falha na requisição!\nErro > {erro}")
-    
-    finally:
-        if cursor is not None:
-            cursor.close()
